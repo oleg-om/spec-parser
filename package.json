@@ -1,0 +1,20 @@
+{
+  "name": "auto-parser",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.6.5",
+    "dotenv": "^16.3.1",
+    "fs": "^0.0.1-security",
+    "prettier": "^3.2.4",
+    "progress": "^2.0.3",
+    "puppeteer": "^21.7.0"
+  }
+}
