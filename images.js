@@ -2,10 +2,9 @@ import fs from "fs";
 import { PATHS } from "./config.js";
 import { downloadImage, showProgress } from "./utils.js";
 
-
 let cars = [];
 
-export async function parseImages() {
+export async function parseImages(from, to) {
   // GENERATIONS
   // read file with generations
   const generations = async () => {
@@ -21,18 +20,29 @@ export async function parseImages() {
   // MODIFICATIONS
   // await modifications
   const generationsResponse = await generations();
-  const generationsLength = generationsResponse.generations.length;
+
+  const sliced = generationsResponse.generations.slice(from, to);
+
+  const generationsLength = sliced.length;
 
   // fetch gens loop
 
-  const { bar } = showProgress(Number(generationsLength), "Downloading images");
+  const { bar } = showProgress(
+    Number(generationsLength),
+    `Downloading images from ${from} to ${to}`,
+  );
 
-  for await (const generation of generationsResponse.generations) {
+  for await (const generation of sliced) {
     const { image } = generation;
-    const { imageId } = image;
 
-    await downloadImage(image.presets.default, `${imageId}-default.png`);
-    await downloadImage(image.presets.preview, `${imageId}-preview.png`);
+    const imageId = image?.imageId;
+
+    console.log("IMAGE: ", image, generation.slug);
+
+    if (imageId && image?.presets?.default && image?.presets?.preview) {
+      await downloadImage(image.presets.default, `${imageId}-default.png`);
+      await downloadImage(image.presets.preview, `${imageId}-preview.png`);
+    }
 
     bar.tick();
   }

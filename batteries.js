@@ -5,12 +5,15 @@ import { showProgress } from "./utils.js";
 
 let cars = [];
 
-export async function parseBatteries() {
+export async function parseBatteries(range) {
   // MODIFICATIONS
   // read file with modifications
   const modifications = async () => {
     try {
-      const data = await fs.promises.readFile(PATHS.modifications, "utf8");
+      const data = await fs.promises.readFile(
+        PATHS.modifications + "_" + range + ".json",
+        "utf8",
+      );
       console.log("Modifications have been read");
       return JSON.parse(data);
     } catch (err) {
@@ -61,11 +64,13 @@ export async function parseBatteries() {
     bar.tick();
   }
 
+  const fileName = PATHS.batteries + "_" + range + ".json";
+
   return await fs.promises.writeFile(
-    PATHS.batteries,
+    fileName,
     JSON.stringify({ sizes: cars }, null, 2),
     () => {
-      console.log("Batteries sizes are fetched. Saved to " + PATHS.batteries);
+      console.log("Batteries sizes are fetched. Saved to " + fileName);
 
       return cars;
     },

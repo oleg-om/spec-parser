@@ -43,7 +43,7 @@ export const showProgress = (itemsLength, message) => {
 };
 
 export async function downloadImage(url, file) {
-  const path = Path.resolve( "images", file);
+  const path = Path.resolve("images", file);
   const writer = Fs.createWriteStream(path);
 
   const response = await Axios({
@@ -58,4 +58,25 @@ export async function downloadImage(url, file) {
     writer.on("finish", resolve);
     writer.on("error", reject);
   });
+}
+
+export function flatten(arr) {
+  return arr.reduce(function (flat, toFlatten) {
+    return flat.concat(
+      Array.isArray(toFlatten) ? flatten(toFlatten) : toFlatten,
+    );
+  }, []);
+}
+
+export function getString(item) {
+  return item?.toString() || "";
+}
+
+export function objectToString(obj) {
+  return Object.entries(obj).reduce((acc, [k, v]) => {
+    return {
+      ...acc,
+      [k]: getString(v),
+    };
+  }, {});
 }

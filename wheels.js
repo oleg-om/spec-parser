@@ -5,12 +5,15 @@ import { showProgress } from "./utils.js";
 
 let cars = [];
 
-export async function parseWheels() {
+export async function parseWheels(range) {
   // MODIFICATIONS
   // read file with modifications
   const modifications = async () => {
     try {
-      const data = await fs.promises.readFile(PATHS.modifications, "utf8");
+      const data = await fs.promises.readFile(
+        PATHS.modifications + "_" + range + ".json",
+        "utf8",
+      );
       console.log("Modifications have been read");
       return JSON.parse(data);
     } catch (err) {
@@ -61,11 +64,13 @@ export async function parseWheels() {
     bar.tick();
   }
 
+  const fileName = PATHS.wheels + "_" + range + ".json";
+
   return await fs.promises.writeFile(
-    PATHS.wheels,
+      fileName,
     JSON.stringify({ sizes: cars }, null, 2),
     () => {
-      console.log("Wheel sizes are fetched. Saved to " + PATHS.wheels);
+      console.log("Wheel sizes are fetched. Saved to " + fileName);
 
       return cars;
     },

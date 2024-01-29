@@ -29,23 +29,31 @@ export async function parseGenerations() {
       return axios
         .get(ENV.GENERATION_URL_1 + model + ENV.GENERATION_URL_2)
         .then((res) => {
-          if (res?.data && res?.data?.length) {
-            const addedModelsToGen = res.data.reduce(
-              (acc, rec) => [
-                ...acc,
-                { ...transformId(transformImages(rec)), model_slug: model },
-              ],
-              [],
-            );
-            cars.push(...addedModelsToGen);
+          if (res?.data) {
+            if (res.data?.length) {
+              const addedModelsToGen = res.data.reduce(
+                (acc, rec) => [
+                  ...acc,
+                  { ...transformId(transformImages(rec)), model_slug: model },
+                ],
+                [],
+              );
+              cars.push(...addedModelsToGen);
 
-            return resolve(addedModelsToGen);
+              return resolve(addedModelsToGen);
+            } else {
+              return resolve();
+            }
           } else {
             throw new Error();
           }
         })
         .catch((err) => {
-          console.error("Error while fetching generation", err);
+          console.error(
+            "Error while fetching generation, model is ",
+            model,
+            err,
+          );
           reject(err);
         });
     });

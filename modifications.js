@@ -5,7 +5,7 @@ import { showProgress, transformId } from "./utils.js";
 
 let cars = [];
 
-export async function parseModifications() {
+export async function parseModifications(from, to) {
   // GENERATIONS
   // read file with generations
   const generations = async () => {
@@ -21,7 +21,8 @@ export async function parseModifications() {
   // MODIFICATIONS
   // await modifications
   const generationsResponse = await generations();
-  const generationsLength = generationsResponse.generations.length;
+  const sliced = generationsResponse.generations.slice(from, to);
+  const generationsLength = sliced.length;
 
   // fetch modifications function
   const fetchGeneration = async (gen) => {
@@ -29,18 +30,23 @@ export async function parseModifications() {
       return axios
         .get(ENV.MODIFICATION_URL_1 + gen + ENV.MODIFICATION_URL_2)
         .then((res) => {
-          if (res?.data && res?.data?.length) {
-            const addedGenToMods = res.data.reduce(
-              (acc, rec) => [
-                ...acc,
-                { ...transformId(rec), generation_slug: gen },
-              ],
-              [],
-            );
-            cars.push(...addedGenToMods);
+          if (res?.data && res?.data) {
+            if (res.data?.length) {
+              const addedGenToMods = res.data.reduce(
+                (acc, rec) => [
+                  ...acc,
+                  { ...transformId(rec), generation_slug: gen },
+                ],
+                [],
+              );
+              cars.push(...addedGenToMods);
 
-            return resolve(addedGenToMods);
+              return resolve(addedGenToMods);
+            } else {
+              return resolve();
+            }
           } else {
+            console.log("ERROR: gen is ", gen, ", data: ", res.data);
             throw new Error();
           }
         })
@@ -55,20 +61,22 @@ export async function parseModifications() {
 
   const { bar } = showProgress(
     Number(generationsLength),
-    "Fetching modifications",
+    `Fetching modifications from ${from} to ${to}`,
   );
 
-  for await (const generation of generationsResponse.generations) {
+  for await (const generation of sliced) {
     await fetchGeneration(generation.slug);
 
     bar.tick();
   }
 
+  const fileName = `${PATHS.modifications}_${from}_${to}.json`;
+
   return await fs.promises.writeFile(
-    PATHS.modifications,
+    fileName,
     JSON.stringify({ modifications: cars }, null, 2),
     () => {
-      console.log("Modifications are fetched. Saved to " + PATHS.modifications);
+      console.log("Modifications are fetched. Saved to " + fileName);
 
       return cars;
     },
