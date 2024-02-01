@@ -52,11 +52,11 @@ import { modifyBatteriesAndExportToCsv } from "./csv/car_batteries.js";
   //
   // await modifyBrandsAndExportToCsv();
   // await modifyModelsAndExportToCsv();
-  // await modifyGensAndExportToCsv();
+  await modifyGensAndExportToCsv();
   // await modifyModificationsAndExportToCsv();
   // await modifyTyresAndExportToCsv();
   // await modifyWheelsAndExportToCsv();
-  await modifyBatteriesAndExportToCsv();
+  // await modifyBatteriesAndExportToCsv();
 
   console.log("Everything is done!");
 })();

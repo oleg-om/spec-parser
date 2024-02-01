@@ -50,10 +50,17 @@ export async function modifyModificationsAndExportToCsv() {
         release_year_end: item.releaseYearEnd,
         engine_type: item.engineType,
         engine_type_text: item.engineTypeText,
-        engine_displacement: item.engineDisplacement,
+        engine_displacement: item.engineDisplacement?.toFixed(1) || "",
         hp_from: item.hpFrom,
         hp_to: item.hpTo,
         kw: item.kw,
+        hp_title:
+          item.hpFrom && item.hpTo
+            ? item.hpFrom === item.hpTo
+              ? `${item.hpFrom} л.с.`
+              : `${item.hpFrom} - ${item.hpTo} л.с.`
+            : "",
+        is_active: 1,
       });
     });
 

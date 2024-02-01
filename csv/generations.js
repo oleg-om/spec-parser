@@ -31,7 +31,7 @@ export async function modifyGensAndExportToCsv() {
     delete obj["image"];
     delete obj["uuid"];
     delete obj["uuid"];
-    delete obj["imageId"]
+    delete obj["imageId"];
 
     return {
       ...obj,
@@ -42,10 +42,11 @@ export async function modifyGensAndExportToCsv() {
       is_subitems_optional: item.isSubitemsOptional ? "1" : "0",
       image_default: item.image?.presets?.default
         ? item.image?.imageId + "-default" + ".png"
-        : null,
+        : "placeholder.png",
       image_preview: item.image?.presets?.preview
         ? item.image?.imageId + "-preview" + ".png"
-        : null,
+        : "placeholder.png",
+      is_active: 1,
     };
   });
 
