@@ -40,34 +40,36 @@ export async function modifyTyresAndExportToCsv() {
 
       // stringify sizes
       const stringifySizes = (sizes) => {
-        // display.log('-->', size)
-        return sizes.map((s) => s.title).join("|");
+
+        const tyresList = sizes.map((size) => {
+          return size.reduce((acc, rec) => {
+            return [...acc, rec.map((it) => it.title).join(':')];
+          },[]).join("|");
+        });
+        return tyresList.join("|");
       };
 
       // stringify object
       const simplifyStructure = (ob) => {
-        return Object.entries(ob).map(([key, value]) => flatten(value.sizes));
+        // console.log('ob', Object.entries(ob).map(([key, value]) => flatten(value.sizes)))
+        return Object.entries(ob).map(([key, value]) => value.sizes);
       };
 
       // rename types
       const withTypes = Object.fromEntries(
         Object.entries(rec).map(([key, value]) => [
           `${key}_tyres`,
-          stringifySizes(flatten(simplifyStructure(value))),
+          stringifySizes((simplifyStructure(value))),
         ]),
       );
 
       withTypes.modification_slug = modification_slug;
+
       withTypes.diameters =
         Object.entries(rec)
           .map(([key, value]) => {
-            if (key === "factory")
-              return Object.entries(value).map((d) => {
-                return d[0];
-              });
-          })
-          .filter((it) => !!it)[0]
-          ?.join("|") || null;
+            return Object.keys(value).join('|')
+          }).join('|')
 
       if (!withTypes.tuning_tyres) {
         withTypes.tuning_tyres = null;
