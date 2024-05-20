@@ -72,7 +72,7 @@ export async function modifyTyresAndExportToCsv() {
           })
 
       if (withTypes.diameters?.length) {
-        withTypes.diameters = [...new Set([...new Set(withTypes.diameters)].join(',').split(','))]
+        withTypes.diameters = [...new Set([...new Set(withTypes.diameters)].join(',').split(','))].join('|')
       }
 
 
