@@ -68,8 +68,14 @@ export async function modifyTyresAndExportToCsv() {
       withTypes.diameters =
         Object.entries(rec)
           .map(([key, value]) => {
-            return Object.keys(value).join('|')
-          }).join('|')
+            return Object.keys(value)
+          })
+
+      if (withTypes.diameters?.length) {
+        withTypes.diameters = [...new Set([...new Set(withTypes.diameters)].join(',').split(','))]
+      }
+
+
 
       if (!withTypes.tuning_tyres) {
         withTypes.tuning_tyres = null;
