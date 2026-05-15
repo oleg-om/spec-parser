@@ -36,7 +36,7 @@ export async function modifyGensAndExportToCsv() {
     return {
       ...obj,
       id: obj.id.toString(),
-      items_count: item.itemsCount.toString(),
+      items_count: item.itemsCount?.toString() || '0',
       release_year_start: item.releaseYearStart.toString(),
       release_year_end: item.releaseYearEnd.toString(),
       is_subitems_optional: item.isSubitemsOptional ? "1" : "0",

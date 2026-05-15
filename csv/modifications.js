@@ -41,6 +41,7 @@ export async function modifyModificationsAndExportToCsv() {
       delete obj["hpFrom"];
       delete obj["hpTo"];
       delete obj["uuid"];
+      delete obj["category"];
 
       return objectToString({
         ...obj,
