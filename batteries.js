@@ -28,13 +28,30 @@ export async function parseBatteries(range) {
 
   // fetch wheel batteries function
   const fetchBatteries = async (modification) => {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
+      let addedModToBatteries = {
+        modification_slug: modification,
+        range: null,
+      };
+      await axios
+        .get(ENV.BATTERY_CURRENT_URL + modification)
+        .then((response) => {
+          if (response?.data) {
+            if (response?.data?.current?.payload?.range?.min) {
+              addedModToBatteries.range = {
+                min: Number(response.data?.current?.payload.range.min),
+                max: Number(response.data?.current?.payload.range.max),
+              };
+            }
+          }
+        });
+
       return axios
         .get(ENV.BATTERY_URL + modification)
         .then((res) => {
           if (res?.data) {
-            const addedModToBatteries = {
-              modification_slug: modification,
+            addedModToBatteries = {
+              ...addedModToBatteries,
               data: res.data,
             };
             cars.push(addedModToBatteries);

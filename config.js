@@ -34,6 +34,7 @@ export const ENV = {
   TYRE_URL_2: process.env.TYRE_URL_2,
   WHEEL_URL: process.env.WHEEL_URL,
   BATTERY_URL: process.env.BATTERY_URL,
+  BATTERY_CURRENT_URL: process.env.BATTERY_CURRENT_URL,
 };
 
 export const RANGES = ['0_1000','1000_2000', '2000_3000', '3000_4000']
