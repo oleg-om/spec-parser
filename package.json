@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node index.js"
+    "start": "node --max-http-header-size=80000 index.js"
   },
   "author": "",
   "license": "ISC",
@@ -13,7 +13,6 @@
     "axios": "^1.6.5",
     "dotenv": "^16.3.1",
     "export-to-csv": "^1.2.2",
-    "fs": "^0.0.1-security",
     "prettier": "^3.2.4",
     "progress": "^2.0.3",
     "puppeteer": "^21.7.0"
