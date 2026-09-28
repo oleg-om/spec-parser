@@ -41,8 +41,9 @@ export async function modifyBatteriesAndExportToCsv() {
     return data.reduce((acc, rec) => {
       // remove modification_slug
       const obj = { ...rec };
-      const { modification_slug } = obj;
+      const { modification_slug, current_range } = obj;
       delete rec.modification_slug;
+      delete rec.current_range;
 
       const modified = obj.data.map((kit) => {
         const {
@@ -74,6 +75,8 @@ export async function modifyBatteriesAndExportToCsv() {
           height_min: height.min,
           height_max: height.max,
           grouped_params: kit.groupedParams,
+          current_min: current_range?.min || null,
+          current_max: current_range?.max || null,
         });
       });
 

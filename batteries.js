@@ -31,14 +31,14 @@ export async function parseBatteries(range) {
     return new Promise(async (resolve, reject) => {
       let addedModToBatteries = {
         modification_slug: modification,
-        range: null,
+        current_range: null,
       };
       await axios
         .get(ENV.BATTERY_CURRENT_URL + modification)
         .then((response) => {
           if (response?.data) {
             if (response?.data?.current?.payload?.range?.min) {
-              addedModToBatteries.range = {
+              addedModToBatteries.current_range = {
                 min: Number(response.data?.current?.payload.range.min),
                 max: Number(response.data?.current?.payload.range.max),
               };
@@ -75,10 +75,16 @@ export async function parseBatteries(range) {
     "Fetching battery sizes",
   );
 
+  let i = 0;
   for await (const modification of modificationsResponse.modifications) {
     await fetchBatteries(modification.slug);
 
     bar.tick();
+
+    i++;
+    if (i % 100 === 0) {
+      await new Promise((resolve) => setTimeout(resolve, 10000));
+    }
   }
 
   const fileName = PATHS.batteries + "_" + range + ".json";
